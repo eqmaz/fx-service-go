@@ -1,0 +1,47 @@
+{
+    "currenciesEnabled": ["AUD", "CAD", "CHF", "EUR", "GBP", "JPY", "NOK", "NZD", "SEK", "USD"],
+    "currenciesCaseSensitive": false,
+    "rateLimiter": {
+        "enabled": true,
+        "maxRequests": 15,
+        "timeframe": 30
+    },
+    "mode": "robin",
+    "router": "Fiber",
+    "port": 8080,
+    "apiTimeout": 15,
+    "cacheExpirySec": 3600,
+    "showProvider": true,
+    "providers": {
+        "CurrencyLayer": {
+            "enabled": true,
+            "key": "fhG9fu4MG8QmWjya89Ptsa9KCUNgyrYF",
+            "priority": 1
+        },
+        "ExchangeRateApi": {
+            "enabled": true,
+            "key": "YOUR-API-KEY-HERE",
+            "priority": 2
+        },
+        "FixerApi": {
+            "enabled": false,
+            "key": "YOUR-API-KEY-HERE",
+            "priority": 3
+        },
+        "FreeCurrencyApi": {
+            "enabled": false,
+            "key": "YOUR-API-KEY-HERE",
+            "priority": 4
+        },
+        "FreeCurrencyConverterAPI": {
+            "enabled": false,
+            "key": "YOUR-API-KEY-HERE",
+            "priority": 5
+        },
+        "OpenExchangeRates": {
+            "enabled": false,
+            "key": "YOUR-API-KEY-HERE",
+            "priority": 6
+        }
+    }
+}
