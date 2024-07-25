@@ -1,11 +1,11 @@
 # FX Rate Getter API Service
 
-This REST service provides highly available foreign exchange rates for onr or more quotes, 
-by using multiple provider APIs for high available. 
+This REST service provides highly available foreign exchange rates for onr or more quote currencies, 
+by using multiple provider API sources.
 
-Results may be cached for a set duration, reducing third-party service load. 
-It uses configurable load balancing strategies to ensure consistent and potentially free* FX rate responses, 
-minimizing downtime and evenly distributing load across multiple providers.
+Results may be cached for a set duration, which reduces third-party service load. 
+It uses configurable load balancing and aggregation strategies to ensure consistent, fast 
+and potentially free* FX rate responses, minimizing downtime risk and distributing load across providers.
 
 This app can be adapted from being domain-specific (an FX rate retriever) to being a general data retriever 
 for any data type from multiple similar APIs, such as weather or stock prices. Contributions welcome.
