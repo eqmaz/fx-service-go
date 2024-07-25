@@ -75,18 +75,19 @@ func Test_trimFunctionName(t *testing.T) {
 }
 
 func Test_captureBacktrace(t *testing.T) {
-	_, file, function, line, trace := captureBacktrace()
-	if file == "" {
-		t.Error("expected non-empty file")
-	}
-	if function == "" {
-		t.Error("expected non-empty function")
-	}
-	if line == 0 {
-		t.Error("expected non-zero line number")
-	}
+	_, trace := captureBacktrace()
 	if len(trace.Lines) == 0 {
 		t.Error("expected non-empty trace lines")
+	}
+	firstLine := trace.Lines[0]
+	if firstLine.File == "" {
+		t.Error("expected non-empty file")
+	}
+	if firstLine.Func == "" {
+		t.Error("expected non-empty function")
+	}
+	if firstLine.Line == 0 {
+		t.Error("expected non-zero line number")
 	}
 }
 
@@ -99,7 +100,7 @@ func Test_makeException(t *testing.T) {
 	file := "file.go"
 	function := "FuncName"
 
-	ex := makeException(trace, line, code, msg, ts, file, function)
+	ex := makeException(trace, code, msg, ts)
 	if ex == nil {
 		t.Fatal("expected non-nil exception")
 	}

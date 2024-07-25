@@ -18,7 +18,7 @@ type TraceLine struct {
 func (t TraceLine) String() string {
 	st := ""
 	if t.Struct != "" {
-		st = fmt.Sprintf("Struct: %s,", t.Struct)
+		st = t.Struct + "."
 	}
-	return fmt.Sprintf("%s:%d Pkg: %s, %s Func %s()", t.File, t.Line, t.Package, st, t.Func)
+	return fmt.Sprintf("%s:%d %s.%s%s", t.File, t.Line, t.Package, st, t.Func)
 }

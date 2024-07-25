@@ -33,7 +33,7 @@ func captureOutput(f func()) string {
 // Test for the send function
 func TestSend(t *testing.T) {
 	// Test case when suspended is false
-	suspended = false
+	Resume()
 	output := captureOutput(func() {
 		send("Hello, send!")
 	})
@@ -44,13 +44,15 @@ func TestSend(t *testing.T) {
 	}
 
 	// Test case when suspended is true
-	suspended = true
+	Suspend()
 	output = captureOutput(func() {
 		send("This should not be printed.")
 	})
 	if output != "" {
 		t.Errorf("Expected no output but got %q", output)
 	}
+
+	Resume()
 }
 
 // Test for the colorize function

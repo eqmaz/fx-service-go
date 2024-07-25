@@ -65,14 +65,12 @@ func trimFunctionName(function string) (pkg string, structName string, fn string
 //}
 
 // captureBacktrace captures the backtrace and returns the relevant details.
-func captureBacktrace() (string, string, string, int, Trace) {
+func captureBacktrace() (string, Trace) {
 	var pcs [32]uintptr
 	n := runtime.Callers(3, pcs[:])
 	frames := runtime.CallersFrames(pcs[:n])
 
 	var sb strings.Builder
-	var file, function string
-	var line int
 	var traceLines []TraceLine
 	for i := 0; ; i++ {
 		frame, more := frames.Next()
@@ -86,36 +84,18 @@ func captureBacktrace() (string, string, string, int, Trace) {
 			Struct:  st,
 			Func:    fn,
 		})
-		if i == 0 {
-			function = fn
-			file = trimmedFile
-			line = frame.Line
-		}
 		if !more {
 			break
 		}
 	}
-
-	if file == "" {
-		file = "[unknown file]"
-	}
-	if function == "" {
-		function = "[unknown function]"
-	}
-	if line == 0 {
-		line = 0 // Unknown line
-	}
-
-	return sb.String(), file, function, line, Trace{Lines: traceLines}
+	return sb.String(), Trace{Lines: traceLines}
 }
 
 // makeException internal helper to create an exception instance.
-func makeException(trace Trace, line int, code, msg, ts, file, function string) *Exception {
-	tl := &TraceLine{
-		File: file,
-		Line: uint(line),
-
-		Func: function,
+func makeException(trace Trace, code, msg, ts string) *Exception {
+	var tl *TraceLine
+	if trace.Count() > 0 {
+		tl = &trace.Lines[0]
 	}
 
 	return &Exception{
@@ -127,23 +107,6 @@ func makeException(trace Trace, line int, code, msg, ts, file, function string) 
 		fields:   make(map[string]interface{}),
 	}
 }
-
-//func makeException(trace Trace, line int, code, msg, ts, file, function string) *Exception {
-//	tl := &TraceLine{
-//		File: file,
-//		Line: uint(line),
-//		Func: function,
-//	}
-//
-//	return &Exception{
-//		code:     code,
-//		message:  msg,
-//		traceStr: ts,
-//		origin:   tl,
-//		trace:    &trace,
-//		fields:   make(map[string]interface{}),
-//	}
-//}
 
 // printException private helper to recursively print exceptions.
 func printException(ex *Exception, backtraceLevel, chainLevel, level int, color func(string) string, reset func() string) {

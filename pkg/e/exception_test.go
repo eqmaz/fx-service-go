@@ -77,7 +77,7 @@ func TestThrowLine(t *testing.T) {
 	}
 
 	ex = Throw("123", "test line and file")
-	expectedLine := 78 // NOTE - adjust if this file changes
+	expectedLine := 79 // NOTE - adjust if this file changes
 	if ex.GetLine() != uint(expectedLine) {
 		t.Errorf("expected line %d, got %d", expectedLine, ex.GetLine())
 	}
@@ -96,10 +96,14 @@ func TestFile(t *testing.T) {
 func TestThrowFunction(t *testing.T) {
 	ex := Throw("123", "test function")
 
-	expectedFunction := "e.TestThrowFunction"
+	expectedFunction := "TestThrowFunction"
+	expectedPackage := "e"
 
 	if ex.GetFunction() != expectedFunction {
 		t.Errorf("expected function: '%s', got: '%s'", expectedFunction, ex.GetFunction())
+	}
+	if ex.GetPackage() != expectedPackage {
+		t.Errorf("expected package: '%s', got: '%s'", expectedPackage, ex.GetPackage())
 	}
 }
 
@@ -114,16 +118,18 @@ func TestError(t *testing.T) {
 }
 
 func TestJSON(t *testing.T) {
-	ex := Throw("123", "test json")
+	SetFilePathTrimPoint("/fx-service")
+
+	ex := Throw("abc", "test json")
 
 	result, err := ex.JSON()
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 
-	expectedJSON := `{"code":"123","message":"test json","origin":{"File":"/pkg/e/exception_test.go","Line":115,"Func":"e.TestJSON"},"trace":[{"File":"/pkg/e/exception_test.go","Line":115,"Func":"e.TestJSON"},{"File":"/usr/local/go/src/testing/testing.go","Line":1689,"Func":"testing.tRunner"},{"File":"/usr/local/go/src/runtime/asm_amd64.s","Line":1695,"Func":"runtime.goexit"}]}`
-	if result != expectedJSON {
-		t.Errorf("\nExpected JSON: %s \nGot: %s", expectedJSON, result)
+	expectedJson := `{"code":"abc","message":"test json","origin":{"File":"/pkg/e/exception_test.go","Line":123,"Package":"e","Struct":"","Func":"TestJSON"},"trace":[{"File":"/pkg/e/exception_test.go","Line":123,"Package":"e","Struct":"","Func":"TestJSON"},{"File":"/usr/local/go/src/testing/testing.go","Line":1689,"Package":"testing","Struct":"","Func":"tRunner"},{"File":"/usr/local/go/src/runtime/asm_amd64.s","Line":1695,"Package":"runtime","Struct":"","Func":"goexit"}]}`
+	if result != expectedJson {
+		t.Errorf("\nExpected JSON: %s \nGot: %s", expectedJson, result)
 	}
 }
 
@@ -142,9 +148,6 @@ func TestThrowChainedBacktrace(t *testing.T) {
 		if prevEx == nil {
 			t.Errorf("expected previous error to be of type *Exception, got nil")
 			return
-		}
-		if prevEx.GetTrace() != nil {
-			t.Errorf("expected previous backtrace to be non-empty")
 		}
 	}
 }

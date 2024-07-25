@@ -1,5 +1,16 @@
+# IDEs
 .idea
 .vscode
-coverage.out
+
+# Configs
 .config.json
+
+# Binaries
 server
+*.exe
+*.dll
+*.so
+
+# Logs
+*.log
+coverage.out

@@ -46,15 +46,15 @@ type Exception struct {
 // Throw creates the Exception struct.
 // code should be a unique identifier for the error, message is a human-readable error message.
 func Throw(code string, message string) *Exception {
-	traceString, file, function, line, trace := captureBacktrace()
-	return makeException(trace, line, code, message, traceString, file, function)
+	traceString, trace := captureBacktrace()
+	return makeException(trace, code, message, traceString)
 }
 
 // Throwf creates the Exception struct with a formatted message.
 func Throwf(code string, format string, args ...interface{}) *Exception {
 	msg := fmt.Sprintf(format, args...)
-	traceString, file, function, line, trace := captureBacktrace()
-	return makeException(trace, line, code, msg, traceString, file, function)
+	traceString, trace := captureBacktrace()
+	return makeException(trace, code, msg, traceString)
 }
 
 // FromCode creates an Exception from a pre-catalogued error code.
@@ -72,8 +72,8 @@ func FromCode(code string, args ...interface{}) *Exception {
 		msg = fmt.Sprintf(msg, args...)
 	}
 
-	traceString, file, function, line, trace := captureBacktrace()
-	return makeException(trace, line, code, msg, traceString, file, function)
+	traceString, trace := captureBacktrace()
+	return makeException(trace, code, msg, traceString)
 }
 
 // FromError creates an Exception from an error interface.
@@ -84,10 +84,10 @@ func FromError(err error) *Exception {
 	if errors.As(err, &ex) {
 		return ex
 	}
-	traceString, file, function, line, trace := captureBacktrace()
+	traceString, trace := captureBacktrace()
 	code := ""
 	msg := err.Error()
-	return makeException(trace, line, code, msg, traceString, file, function)
+	return makeException(trace, code, msg, traceString)
 }
 
 // Error method to satisfy the error interface.
