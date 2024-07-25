@@ -19,6 +19,7 @@ help:
 	echo "  make start      - Start (run) the already compiled binary"
 	echo "  make test       - Run tests"
 	echo "  make test-cover - Run tests with coverage"
+	echo "  make update     - Update all packages in all subdirectories, tidy and verify"
 
 # Default target
 .PHONY: run
@@ -56,3 +57,10 @@ test-cover:
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out
 	rm coverage.out
+
+# Update all packages
+.PHONY: update
+update:
+	go get -u ./...
+	go mod tidy
+	go mod verify
