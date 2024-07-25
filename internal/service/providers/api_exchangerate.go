@@ -5,6 +5,7 @@ import (
 	"fmt"
 	c "fx-service/pkg/console"
 	"fx-service/pkg/e"
+	util "fx-service/pkg/helpers"
 	"net/http"
 )
 
@@ -27,7 +28,7 @@ type ExchangeRateApi struct {
 	Name                string
 	APIKey              string
 	Timeout             int
-	SupportedCurrencies []string
+	supportedCurrencies []string
 }
 
 type exchangeRateAPIResponse struct {
@@ -72,23 +73,23 @@ func (api *ExchangeRateApi) getSupportedCurrencies() error {
 	}
 
 	// Extract the supported currencies from the response
-	api.SupportedCurrencies = make([]string, 0, len(response.SupportedCodes))
+	api.supportedCurrencies = make([]string, 0, len(response.SupportedCodes))
 	for _, code := range response.SupportedCodes {
 		if len(code) == 0 {
 			// Should never happen
 			continue
 		}
 		supportedCode := code[0]
-		api.SupportedCurrencies = append(api.SupportedCurrencies, supportedCode)
+		api.supportedCurrencies = append(api.supportedCurrencies, supportedCode)
 	}
 
 	// Check length of supported currencies
-	if len(api.SupportedCurrencies) == 0 {
+	if len(api.supportedCurrencies) == 0 {
 		// Should never happen
 		return e.Throw(errNoResult, "ExchangeRate-API response did not contain supported codes").SetFields(ef)
 	}
 
-	c.Infof("Provider '%s' supports %v currencies", api.Name, len(api.SupportedCurrencies))
+	c.Infof("Provider '%s' supports %v currencies", api.Name, len(api.supportedCurrencies))
 
 	return nil
 }
@@ -202,10 +203,5 @@ func (api *ExchangeRateApi) GetRates(from string, to []string) (RateList, error)
 }
 
 func (api *ExchangeRateApi) Supports(currency string) bool {
-	for _, next := range api.SupportedCurrencies {
-		if next == currency {
-			return true
-		}
-	}
-	return false
+	return util.SliceContains(api.supportedCurrencies, currency)
 }

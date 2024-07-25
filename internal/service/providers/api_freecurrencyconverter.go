@@ -3,6 +3,7 @@ package providers
 import (
 	"encoding/json"
 	"fmt"
+	util "fx-service/pkg/helpers"
 	"io"
 	"net/http"
 	"strings"
@@ -15,20 +16,23 @@ import (
  * Website: https://www.currencyconverterapi.com/
  */
 
-// todo -change to better way of doing this
-var freeCurrencyConverterAPISupportedCurrencies = []string{"USD", "EUR", "GBP", "JPY", "AUD", "CAD"}
-
 type FreeCurrencyConverterAPI struct {
 	Name                string
 	APIKey              string
 	Timeout             int
-	SupportedCurrencies []string // TODO
+	supportedCurrencies []string // TODO
 }
 
 const freeCurrencyConverterAPIBaseURL = "https://free.currconv.com/api/v7/convert?q=%s&compact=ultra&apiKey=%s"
 
 func (api *FreeCurrencyConverterAPI) CheckApiKey() bool {
-	return api.APIKey != ""
+	if api.APIKey == "" {
+		return false
+	}
+
+	// TODO
+	api.supportedCurrencies = []string{"USD", "EUR", "GBP", "JPY", "AUD", "CAD"}
+	return false
 }
 
 func (api *FreeCurrencyConverterAPI) GetName() string {
@@ -94,10 +98,5 @@ func (api *FreeCurrencyConverterAPI) GetRates(from string, to []string) (RateLis
 }
 
 func (api *FreeCurrencyConverterAPI) Supports(currency string) bool {
-	for _, c := range freeCurrencyConverterAPISupportedCurrencies {
-		if c == currency {
-			return true
-		}
-	}
-	return false
+	return util.SliceContains(api.supportedCurrencies, currency)
 }

@@ -207,10 +207,5 @@ func (api *OpenExchangeRates) GetRates(from string, to []string) (RateList, erro
 }
 
 func (api *OpenExchangeRates) Supports(currency string) bool {
-	for _, next := range api.supportedCurrencies {
-		if next == currency {
-			return true
-		}
-	}
-	return false
+	return util.SliceContains(api.supportedCurrencies, currency)
 }

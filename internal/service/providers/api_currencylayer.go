@@ -3,10 +3,12 @@ package providers
 import (
 	"encoding/json"
 	"fmt"
-	c "fx-service/pkg/console"
-	"fx-service/pkg/e"
 	"net/http"
 	"strings"
+
+	c "fx-service/pkg/console"
+	"fx-service/pkg/e"
+	util "fx-service/pkg/helpers"
 )
 
 /**
@@ -213,10 +215,5 @@ func (api *CurrencyLayer) GetRates(from string, to []string) (RateList, error) {
 }
 
 func (api *CurrencyLayer) Supports(currency string) bool {
-	for _, next := range api.supportedCurrencies {
-		if next == currency {
-			return true
-		}
-	}
-	return false
+	return util.SliceContains(api.supportedCurrencies, currency)
 }
