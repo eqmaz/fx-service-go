@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"fx-service/pkg/console"
-	"github.com/mattn/go-isatty"
 	"os"
 	"sync"
+
+	"fx-service/pkg/console"
+	"github.com/mattn/go-isatty"
 )
 
 // Adjust this to your project name or desired starting path
@@ -80,18 +81,37 @@ func FromCode(code string, args ...interface{}) *Exception {
 // If the error is already an Exception, it will be returned as is.
 // This ensures that the error is always an Exception.
 func FromError(err error) *Exception {
+	var msg string
 	var ex *Exception
+
 	if errors.As(err, &ex) {
-		return ex
+		if ex != nil {
+			// We have a valid Exception, return it as is
+			return ex
+		}
+		// If we get here, err is a nil Exception, in which case
+		// we should return a new exception with the message "nil Exception"
+		msg = "nil Exception"
+	} else {
+		if err != nil {
+			msg = err.Error()
+		} else {
+			msg = "nil error"
+		}
 	}
+
 	traceString, trace := captureBacktrace()
-	code := ""
-	msg := err.Error()
-	return makeException(trace, code, msg, traceString)
+	return makeException(trace, "", msg, traceString)
 }
 
 // Error method to satisfy the error interface.
+// It will print details of the first exception in the chain.
+// TODO should we make a "First()" or "Root()" method to get the first exception?
 func (e *Exception) Error() string {
+	if e == nil {
+		// Should never happen
+		return ""
+	}
 	if e.previous != nil {
 		return fmt.Sprintf(
 			"Code: %v, Message: %s, Previous: %s",
@@ -244,18 +264,18 @@ func (e *Exception) SetFields(fields Fields) *Exception {
 // For chainLevel, pass -1 to skip, 0 to print all levels, or a positive number to print up to that level.
 func (e *Exception) Print(backtraceLevel, chainLevel int) {
 	isTTY := isatty.IsTerminal(os.Stdout.Fd())
-	color := func(c string) string {
+	fnColor := func(c string) string {
 		if isTTY {
 			return c
 		}
 		return ""
 	}
-	reset := func() string {
+	fnReset := func() string {
 		if isTTY {
 			return console.ColorReset
 		}
 		return ""
 	}
 
-	printException(e, backtraceLevel, chainLevel, 0, color, reset)
+	printException(e, backtraceLevel, chainLevel, 0, fnColor, fnReset)
 }

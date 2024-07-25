@@ -16,7 +16,7 @@ func aggregateSingleResult(from string, toCurrency string) (interface{}, *string
 	)
 
 	providerName := "Aggregate [all]"
-	for _, provider := range providers.EnabledProviders {
+	for name, provider := range providers.EnabledProviders {
 		result, err := callProvider(provider, from, toCurrency, false)
 		if err == nil {
 			// Assuming result is a float64 for single currency rate
@@ -29,7 +29,8 @@ func aggregateSingleResult(from string, toCurrency string) (interface{}, *string
 			totalRate += rateF64
 			numRates++
 		} else {
-			log.Warnf("Provider failed for %s -> %s: %v\n", from, toCurrency, err)
+			log.Warnf("Provider %s failed for %s -> %s: %v\n", name, from, toCurrency, err)
+			e.FromError(err).SetField("provider", name).Print(-1, 0)
 		}
 	}
 
@@ -52,7 +53,7 @@ func aggregateMultiResult(from string, toCurrencies []string) (interface{}, *str
 	countMap := make(map[string]int)
 
 	providerName := "Aggregate [all]"
-	for _, provider := range providers.EnabledProviders {
+	for name, provider := range providers.EnabledProviders {
 		result, err := callProvider(provider, from, toCurrencies, true)
 		// TODO sanity check for result type
 		if err == nil {
@@ -63,8 +64,8 @@ func aggregateMultiResult(from string, toCurrencies []string) (interface{}, *str
 				countMap[currency]++
 			}
 		} else {
-			// TODO - log.warn?
 			log.Warnf("Provider failed for %s -> %v: %v\n", from, toCurrencies, err)
+			e.FromError(err).SetField("provider", name).Print(-1, 0)
 		}
 	}
 

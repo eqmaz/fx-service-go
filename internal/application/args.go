@@ -2,10 +2,11 @@ package application
 
 import (
 	"flag"
+	"path/filepath"
+
 	c "fx-service/pkg/console"
 	"fx-service/pkg/e"
 	util "fx-service/pkg/helpers"
-	"path/filepath"
 )
 
 func getConfigFileFromArgs() string {

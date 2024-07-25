@@ -1,6 +1,12 @@
 package application
 
 import (
+	"os"
+	"os/signal"
+	"strconv"
+	"strings"
+	"syscall"
+
 	"fx-service/internal/router"
 	"fx-service/internal/service/providers"
 	"fx-service/internal/service/ratecache"
@@ -8,11 +14,6 @@ import (
 	c "fx-service/pkg/console"
 	"fx-service/pkg/e"
 	"fx-service/pkg/logger"
-	"os"
-	"os/signal"
-	"strconv"
-	"strings"
-	"syscall"
 )
 
 type App struct {
