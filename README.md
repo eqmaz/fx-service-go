@@ -1,11 +1,14 @@
-
 # FX Rate Getter API Service
 
-A REST-based microservice that reliably fetches foreign exchange (FX) currency rates for your project or domain. It utilizes multiple redundant API provider sources to ensure continuous and reliable service.
+This REST service provides highly available foreign exchange rates for onr or more quotes, 
+by using multiple provider APIs for high available. 
 
-Results are cached for a configurable duration, reducing the load on third-party services. With a configurable load balancing strategy, it delivers consistent FX rate responses at no cost*, minimizing downtime and evenly distributing the load across providers.
+Results may be cached for a set duration, reducing third-party service load. 
+It uses configurable load balancing strategies to ensure consistent and potentially free* FX rate responses, 
+minimizing downtime and evenly distributing load across multiple providers.
 
-This app can easily be adapted from an "FX rate getter" to a generic redundant data retriever for any type of data from multiple API providers offering the same or similar APIs. For example, weather data or stock prices. Contributions to that effect are welcome.
+This app can be adapted from being domain-specific (an FX rate retriever) to being a general data retriever 
+for any data type from multiple similar APIs, such as weather or stock prices. Contributions welcome.
 
 ## Features:
 - Configurable (see `config.json`)
