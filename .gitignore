@@ -1,9 +1,10 @@
 # IDEs
 .idea
 .vscode
+.devcontainer
 
 # Configs
-.config.json
+config.json
 
 # Binaries
 server

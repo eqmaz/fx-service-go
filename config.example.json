@@ -15,7 +15,7 @@
     "providers": {
         "CurrencyLayer": {
             "enabled": true,
-            "key": "fhG9fu4MG8QmWjya89Ptsa9KCUNgyrYF",
+            "key": "YOUR-API-KEY-HERE",
             "priority": 1
         },
         "ExchangeRateApi": {
