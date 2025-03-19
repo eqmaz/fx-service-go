@@ -1,13 +1,14 @@
 package middleware
 
 import (
+	"net/http"
+	"time"
+
 	"fx-service/internal/reply"
 	"fx-service/pkg/config"
 	"github.com/gin-gonic/gin"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"net/http"
-	"time"
 )
 
 // FiberRateLimiter limits the number of requests per IP address for Fiber router
